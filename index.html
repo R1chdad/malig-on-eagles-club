@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>MALIG-ON Eagles Club — Administrator Access</title>
+<meta name="theme-color" content="#070706" />
+<style>
+:root{--bg:#070706;--panel:#11110f;--line:#2b281f;--gold:#d9b65b;--ivory:#f4efdf;--muted:#a8a18d;--ok:#7ac49a;--bad:#ff8d8d}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#292312 0,#0b0a08 32%,#070706 66%);color:var(--ivory);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}.wrap{width:min(100%,460px)}.crest{width:74px;height:74px;border:1px solid rgba(217,182,91,.38);border-radius:50%;display:grid;place-items:center;margin:0 auto 20px;font-family:Georgia,serif;font-size:25px;color:var(--gold);box-shadow:0 0 50px rgba(217,182,91,.1)}.eyebrow{text-align:center;letter-spacing:.2em;font-size:11px;color:var(--gold);font-weight:700}.title{text-align:center;font-family:Georgia,serif;font-size:42px;line-height:.98;margin:12px 0 10px}.subtitle{text-align:center;color:var(--muted);font-size:14px;line-height:1.6;margin:0 auto 28px;max-width:370px}.card{background:rgba(17,17,15,.92);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 30px 80px rgba(0,0,0,.36);backdrop-filter:blur(18px)}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#090908;padding:5px;border-radius:14px;margin-bottom:20px}.tabs button{border:0;background:transparent;color:#77705f;padding:11px;border-radius:10px;font-weight:800;cursor:pointer}.tabs button.active{background:#1b1913;color:var(--ivory)}label{display:block;font-size:12px;color:#c9c0a6;margin:14px 0 7px}input{width:100%;border:1px solid #383326;background:#0a0a09;color:white;border-radius:13px;padding:14px 15px;font-size:16px;outline:none}input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,182,91,.08)}button.primary{width:100%;border:0;border-radius:13px;padding:15px 18px;margin-top:18px;background:linear-gradient(135deg,#edcf77,#b98c2d);color:#17120a;font-weight:900;font-size:14px;cursor:pointer}.message{min-height:22px;margin-top:16px;font-size:13px;line-height:1.5;color:var(--muted)}.message.ok{color:var(--ok)}.message.bad{color:var(--bad)}.session{display:none}.session.show{display:block}.auth.hide{display:none}.identity{padding:14px;background:#0b0b09;border:1px solid #28251c;border-radius:14px;margin:14px 0}.identity b{display:block;font-size:15px}.identity span{display:block;color:var(--muted);font-size:12px;margin-top:5px;word-break:break-all}.signout{width:100%;border:1px solid #383326;background:transparent;color:var(--ivory);border-radius:13px;padding:13px;margin-top:10px;cursor:pointer}.fine{text-align:center;margin-top:18px;color:#77705f;font-size:11px;line-height:1.5}.lock{color:var(--gold)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="crest">M</div>
+  <div class="eyebrow">MALIG-ON EAGLES CLUB</div>
+  <h1 class="title">Administrator Access</h1>
+  <p class="subtitle">Secure sign-in for the MALIG-ON digital chapter.</p>
+  <section class="card">
+    <div class="auth" id="auth">
+      <div class="tabs"><button id="loginTab" class="active" type="button">Sign in</button><button id="createTab" type="button">Create account</button></div>
+      <form id="form">
+        <label for="email">Email address</label>
+        <input id="email" type="email" autocomplete="email" required placeholder="you@email.com" />
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" required minlength="8" placeholder="Minimum 8 characters" />
+        <button class="primary" id="submit" type="submit">Sign in securely</button>
+      </form>
+      <div class="message" id="message"></div>
+    </div>
+    <div class="session" id="session">
+      <div class="eyebrow" style="text-align:left">AUTHENTICATED</div>
+      <h2 style="font-family:Georgia,serif;font-size:30px;margin:10px 0">You’re signed in.</h2>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6">This account is ready to be linked to MALIG-ON administrator privileges.</p>
+      <div class="identity"><b id="signedEmail">—</b><span id="signedId">—</span></div>
+      <button class="signout" id="signout" type="button">Sign out</button>
+    </div>
+  </section>
+  <p class="fine"><span class="lock">◆</span> This login belongs only to MALIG-ON Eagles Club.</p>
+</main>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+const supabase = createClient('https://mwgzekyynlbttwqreepu.supabase.co','sb_publishable_LbeCaCu_Yvgp7PJ2fhIxEw_RJ96fIkq');
+const auth=document.getElementById('auth'),sessionBox=document.getElementById('session'),msg=document.getElementById('message'),form=document.getElementById('form'),submit=document.getElementById('submit'),loginTab=document.getElementById('loginTab'),createTab=document.getElementById('createTab');let mode='login';
+function setMode(m){mode=m;loginTab.classList.toggle('active',m==='login');createTab.classList.toggle('active',m==='create');submit.textContent=m==='login'?'Sign in securely':'Create account';msg.textContent='';msg.className='message'}
+loginTab.onclick=()=>setMode('login');createTab.onclick=()=>setMode('create');
+function showSession(s){const on=!!s?.user;auth.classList.toggle('hide',on);sessionBox.classList.toggle('show',on);if(on){document.getElementById('signedEmail').textContent=s.user.email||'Signed-in user';document.getElementById('signedId').textContent='Account ID: '+s.user.id}}
+const {data:{session}}=await supabase.auth.getSession();showSession(session);
+supabase.auth.onAuthStateChange((_event,s)=>showSession(s));
+form.onsubmit=async(e)=>{e.preventDefault();msg.textContent='Working securely…';msg.className='message';submit.disabled=true;const email=document.getElementById('email').value.trim(),password=document.getElementById('password').value;try{if(mode==='create'){const {data,error}=await supabase.auth.signUp({email,password});if(error)throw error;if(data.session){msg.textContent='Account created and signed in.';msg.className='message ok';showSession(data.session)}else{msg.textContent='Account created. Check your email for the confirmation message, then return here and sign in.';msg.className='message ok'}}else{const {data,error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;showSession(data.session)}}catch(err){msg.textContent=err?.message||'Unable to authenticate.';msg.className='message bad'}finally{submit.disabled=false}};
+document.getElementById('signout').onclick=async()=>{await supabase.auth.signOut();showSession(null);setMode('login')};
+</script>
+</body>
+</html>
